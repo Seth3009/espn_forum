@@ -33,6 +33,14 @@ class MessagesController < ApplicationController
     end
   end
 
+  def destroy
+    if @message.destroy
+      redirect_to root_path, alert: 'Message was successfully deleted.'
+    else
+      render @message
+    end
+  end
+
   private
     def message_params
       params.require(:message).permit(:title, :description)
