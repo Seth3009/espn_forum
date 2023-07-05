@@ -1,6 +1,8 @@
 class CommentsController < ApplicationController
+  before_action :authenticate_user!
   before_action :find_message, only: [:create, :edit, :update, :destroy]
   before_action :find_comment, only: [:edit, :update, :destroy]
+  before_action :authorize_user!, only: [:edit, :update, :destroy]
 
   def create
     
@@ -15,7 +17,6 @@ class CommentsController < ApplicationController
   end
 
   def edit
-    
   end
 
   def update
@@ -42,5 +43,11 @@ class CommentsController < ApplicationController
 
   def find_comment
     @comment = @message.comments.find(params[:id])
+  end
+
+  def authorize_user!
+    unless @comment.user == current_user
+      redirect_to message_path(@message), alert: "You can only edit or delete your own comment"
+    end
   end
 end
